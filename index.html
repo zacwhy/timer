@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>React</title>
+		<script src="https://fb.me/react-0.13.2.js"></script>
+		<script src="https://fb.me/JSXTransformer-0.13.2.js"></script>
+		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+		<style type="text/css">
+		.timer {
+			text-align: center;
+		}
+		.individual-time {
+			font-size: 100px;
+		}
+		.group-time {
+			font-size: 80px;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="example"></div>
+		<script type="text/jsx">
+			 var Timer = React.createClass({
+				getInitialState: function() {
+					return {
+						secondsElapsed: 0,
+						totalSecondsElapsed: 0,
+						pauseButtonText: "Pause"
+					};
+				},
+				tick: function() {
+					this.setState({
+						secondsElapsed: this.state.secondsElapsed + 1,
+						totalSecondsElapsed: this.state.totalSecondsElapsed + 1
+					});
+				},
+				componentDidMount: function() {
+					this.interval = setInterval(this.tick, 1000);
+				},
+				componentWillUnmount: function() {
+					clearInterval(this.interval);
+				},
+				pause: function() {
+					if (this.interval) {
+						clearInterval(this.interval);
+						this.interval = false;
+						this.setState({pauseButtonText: "Continue"});
+					} else {
+						this.interval = setInterval(this.tick, 1000);
+						this.setState({pauseButtonText: "Pause"});
+					}
+				},
+				next: function() {
+					this.setState({secondsElapsed: 0});
+				},
+				render: function() {
+					return (
+						<div className="timer">
+							<div>Individual time</div>
+							<div className="individual-time">{secondsToHms(this.state.secondsElapsed)}</div>
+							<div>Group time</div>
+							<div className="group-time">{secondsToHms(this.state.totalSecondsElapsed)}</div>
+							<button onClick={this.pause}>{this.state.pauseButtonText}</button>
+							<button onClick={this.next}>Next</button>
+						</div>
+					);
+				}
+			});
+
+			React.render(<Timer />, document.getElementById('example'));
+
+			//
+			// http://stackoverflow.com/questions/5539028/converting-seconds-into-hhmmss/5539081#5539081
+			//
+			function secondsToHms(d) {
+				d = Number(d);
+				var h = Math.floor(d / 3600);
+				var m = Math.floor(d % 3600 / 60);
+				var s = Math.floor(d % 3600 % 60);
+				return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
+			}
+		</script>
+	</body>
+</html>
