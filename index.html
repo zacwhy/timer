@@ -53,7 +53,7 @@
 				componentWillUnmount: function() {
 					clearInterval(this.interval);
 				},
-				pause: function() {
+				start: function() {
 					if (this.interval) {
 						clearInterval(this.interval);
 						this.interval = false;
@@ -72,11 +72,11 @@
 						<div>
 							<div className="timer">
 								<div>Individual time</div>
-								<div className="individual-time">{formatTime(this.state.secondsElapsed)}</div>
+								<div className="individual-time" onClick={this.next}>{formatTime(this.state.secondsElapsed)}</div>
 								<div>Group time</div>
 								<div className="group-time">{formatTime(this.state.totalSecondsElapsed)}</div>
 								<div className="actions">
-									<button onClick={this.pause}>{this.state.pauseButtonText}</button>
+									<button onClick={this.start}>{this.state.pauseButtonText}</button>
 									<button onClick={this.next}>Next</button>
 								</div>
 							</div>
