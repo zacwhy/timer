@@ -5,6 +5,32 @@
 		<script src="https://fb.me/react-0.13.2.js"></script>
 		<script src="https://fb.me/JSXTransformer-0.13.2.js"></script>
 		<script type="text/javascript" src="names.js"></script>
+		<style type="text/css">
+		.time-list {
+			border: 1px solid #ccc;
+			border-collapse: collapse;
+			font-size: 20px;
+		}
+		.time-list th {
+			padding: 0.5em 1em;
+		}
+		.time-list td {
+			padding: 0.2em 1em;
+		}
+		.odd {
+			background-color: #eee;
+		}
+		.even {
+			background-color: #fff;
+		}
+		.active {
+			background-color: yellow;
+			font-weight: bold;
+		}
+		.time {
+			text-align: right;
+		}
+		</style>
 	</head>
 	<body>
 		<div id="example"></div>
@@ -49,17 +75,30 @@
 				render: function() {
 					return (
 						<div>
-							<div>Total {formatTime(this.getTotalSeconds())}</div>
-							<div>
-								{this.state.people.map(function(person, i) {
-									var isActive = i == this.state.activeIndex;
-									return (
-										<div onClick={this.handleClick.bind(this, i)} key={i}>
-											{isActive ? "(Active) " : ""}{person.name} {formatTime(person.seconds)}
-										</div>
-									);
-								}, this)}
-							</div>
+							<table className="time-list">
+								<thead>
+									<tr>
+										<th>{formatTime(this.getTotalSeconds())}</th>
+										<th>Total</th>
+									</tr>
+								</thead>
+								<tbody>
+									{this.state.people.map(function(person, i) {
+										var className = (i + 1) % 2 == 1 ? "odd" : "even";
+										
+										if (i == this.state.activeIndex) {
+											className += " active";
+										}
+
+										return (
+											<tr onClick={this.handleClick.bind(this, i)} onTouchStart={this.handleClick.bind(this, i)} className={className}>
+												<td className="time">{formatTime(person.seconds)}</td>
+												<td>{person.name}</td>
+											</tr>
+										);
+									}, this)}
+								</tbody>
+							</table>
 						</div>
 					);
 				}
