@@ -93,9 +93,15 @@
 			//
 			function formatTime(d) {
 				d = Number(d);
-				var h = Math.floor(d / 3600);
-				var m = Math.floor(d % 3600 / 60);
-				var s = Math.floor(d % 3600 % 60);
+
+				var secondsInMinute = 60;
+				var minutesInHour = 60;
+				var secondsInHour = minutesInHour * secondsInMinute;
+
+				var h = Math.floor(d / secondsInHour);
+				var m = Math.floor(d % secondsInHour / secondsInMinute);
+				var s = d % secondsInHour % secondsInMinute;
+
 				return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
 			}
 		</script>
