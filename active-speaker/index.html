@@ -1,21 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Timer</title>
 		<script src="https://fb.me/react-0.13.2.js"></script>
 		<script src="https://fb.me/JSXTransformer-0.13.2.js"></script>
 		<script type="text/javascript" src="names.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<style type="text/css">
 		.time-list {
 			border: 1px solid #ccc;
 			border-collapse: collapse;
-			font-size: 20px;
+			width: 100%;
 		}
 		.time-list th {
-			padding: 0.5em 1em;
+			font-size: 20px;
+			padding: 0.4em 0.5em;
 		}
 		.time-list td {
-			padding: 0.2em 1em;
+			font-size: 18px;
+			padding: 0.2em 0.5em;
 		}
 		.odd {
 			background-color: #eee;
@@ -29,6 +33,12 @@
 		}
 		.time {
 			text-align: right;
+		}
+		.active-person-name {
+			font-size: 100px;
+		}
+		.active-person-seconds {
+			font-size: 300px;
 		}
 		</style>
 	</head>
@@ -73,32 +83,42 @@
 					this.setState({activeIndex: i});
 				},
 				render: function() {
-					return (
-						<div>
-							<table className="time-list">
-								<thead>
-									<tr>
-										<th>{formatTime(this.getTotalSeconds())}</th>
-										<th>Total</th>
-									</tr>
-								</thead>
-								<tbody>
-									{this.state.people.map(function(person, i) {
-										var className = (i + 1) % 2 == 1 ? "odd" : "even";
-										
-										if (i == this.state.activeIndex) {
-											className += " active";
-										}
+					var activePerson = (this.state.activeIndex > -1) ? this.state.people[this.state.activeIndex] :  null;
 
-										return (
-											<tr onClick={this.handleClick.bind(this, i)} onTouchStart={this.handleClick.bind(this, i)} className={className}>
-												<td className="time">{formatTime(person.seconds)}</td>
-												<td>{person.name}</td>
+					return (
+						<div className="container">
+							<div className="row">
+								<div className="col-sm-4">
+									<table className="time-list">
+										<thead>
+											<tr>
+												<th className="time">{formatTime(this.getTotalSeconds())}</th>
+												<th>Total</th>
 											</tr>
-										);
-									}, this)}
-								</tbody>
-							</table>
+										</thead>
+										<tbody>
+											{this.state.people.map(function(person, i) {
+												var className = (i + 1) % 2 == 1 ? "odd" : "even";
+												
+												if (i == this.state.activeIndex) {
+													className += " active";
+												}
+
+												return (
+													<tr onClick={this.handleClick.bind(this, i)} onTouchStart={this.handleClick.bind(this, i)} className={className}>
+														<td className="time">{formatTime(person.seconds)}</td>
+														<td>{person.name}</td>
+													</tr>
+												);
+											}, this)}
+										</tbody>
+									</table>
+								</div>
+								<div className="col-sm-8 hidden-xs">
+									<div className="active-person-name">{activePerson != null ? activePerson.name : ""}</div>
+									<div className="active-person-seconds">{activePerson != null ? formatTime(activePerson.seconds) : ""}</div>
+								</div>
+							</div>
 						</div>
 					);
 				}
