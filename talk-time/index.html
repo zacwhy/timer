@@ -37,7 +37,7 @@
 		.active-person .name {
 			font-size: 100px;
 		}
-		.active-person .seconds {
+		.active-person .talk-time {
 			font-size: 300px;
 		}
 		</style>
@@ -47,37 +47,28 @@
 		<script type="text/jsx">
 			var ActivePerson = React.createClass({
 				render: function() {
-					if (this.props.person == null) {
-						return (<div />);
-					}
-
 					return (
 						<div className="active-person">
-							<div className="name">{this.props.person.name}</div>
-							<div className="seconds">{formatTime(this.props.person.seconds)}</div>
+							<div className="name">{this.props.name}</div>
+							<div className="talk-time">{formatTime(this.props.talkTime)}</div>
 						</div>
 					);
 				}
 			});
 			var TimeList = React.createClass({
 				getInitialState: function() {
-					var people = this.props.names.map(function(name, i) {
-						return {name: name, seconds: 0};
-					});
-
 					return {
 						activeIndex: -1,
-						people: people
+						talkTimes: Array.apply(null, new Array(this.props.names.length)).map(Number.prototype.valueOf, 0)
 					};
 				},
-				getTotalSeconds: function() {
-					var totalSeconds = 0;
-
-					this.state.people.forEach(function(person, i) {
-						totalSeconds += person.seconds;
-					});
-
-					return totalSeconds;
+				hasActivePerson: function() {
+					return this.state.activeIndex > -1;
+				},
+				getTotalTalkTime: function() {
+					return this.state.talkTimes.reduce(function(previousValue, currentValue) {
+						return previousValue + currentValue;
+					})
 				},
 				componentDidMount: function() {
 					this.interval = setInterval(this.tick, 1000);
@@ -86,19 +77,18 @@
 					clearInterval(this.interval);
 				},
 				tick: function() {
-					if (this.state.activeIndex > -1)
+					if (this.hasActivePerson())
 					{
-						var nextItems = this.state.people;
-						nextItems[this.state.activeIndex].seconds++;
-						this.setState({people: nextItems});
+						var talkTimes = this.state.talkTimes;
+						talkTimes[this.state.activeIndex]++;
+
+						this.setState({talkTimes: talkTimes});
 					}
 				},
-				handleClick: function(i) {
+				handleSelect: function(i) {
 					this.setState({activeIndex: i});
 				},
 				render: function() {
-					var activePerson = (this.state.activeIndex > -1) ? this.state.people[this.state.activeIndex] :  null;
-
 					return (
 						<div className="container">
 							<div className="row">
@@ -106,22 +96,22 @@
 									<table className="time-list">
 										<thead>
 											<tr>
-												<th className="time">{formatTime(this.getTotalSeconds())}</th>
+												<th className="time">{formatTime(this.getTotalTalkTime())}</th>
 												<th>Total</th>
 											</tr>
 										</thead>
 										<tbody>
-											{this.state.people.map(function(person, i) {
-												var className = (i + 1) % 2 == 1 ? "odd" : "even";
+											{this.props.names.map(function(name, i) {
+												var className = (i % 2 == 0) ? "odd" : "even";
 												
 												if (i == this.state.activeIndex) {
 													className += " active";
 												}
 
 												return (
-													<tr onClick={this.handleClick.bind(this, i)} onTouchStart={this.handleClick.bind(this, i)} className={className}>
-														<td className="time">{formatTime(person.seconds)}</td>
-														<td>{person.name}</td>
+													<tr onClick={this.handleSelect.bind(this, i)} onTouchStart={this.handleSelect.bind(this, i)} className={className}>
+														<td className="time">{formatTime(this.state.talkTimes[i])}</td>
+														<td>{name}</td>
 													</tr>
 												);
 											}, this)}
@@ -129,7 +119,11 @@
 									</table>
 								</div>
 								<div className="col-sm-8 hidden-xs">
-									<ActivePerson person={activePerson} />
+									{
+										(this.hasActivePerson())
+										? <ActivePerson name={this.props.names[this.state.activeIndex]} talkTime={this.state.talkTimes[this.state.activeIndex]} />
+										: <div />
+									}
 								</div>
 							</div>
 						</div>
