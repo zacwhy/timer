@@ -21,23 +21,23 @@
 			font-size: 18px;
 			padding: 0.2em 0.5em;
 		}
-		.odd {
+		.time-list tr.odd {
 			background-color: #eee;
 		}
-		.even {
+		.time-list tr.even {
 			background-color: #fff;
 		}
-		.active {
+		.time-list tr.active {
 			background-color: yellow;
 			font-weight: bold;
 		}
-		.time {
+		.time-list .time {
 			text-align: right;
 		}
-		.active-person-name {
+		.active-person .name {
 			font-size: 100px;
 		}
-		.active-person-seconds {
+		.active-person .seconds {
 			font-size: 300px;
 		}
 		</style>
@@ -45,6 +45,20 @@
 	<body>
 		<div id="example"></div>
 		<script type="text/jsx">
+			var ActivePerson = React.createClass({
+				render: function() {
+					if (this.props.person == null) {
+						return (<div />);
+					}
+
+					return (
+						<div className="active-person">
+							<div className="name">{this.props.person.name}</div>
+							<div className="seconds">{formatTime(this.props.person.seconds)}</div>
+						</div>
+					);
+				}
+			});
 			var TimeList = React.createClass({
 				getInitialState: function() {
 					var people = this.props.names.map(function(name, i) {
@@ -115,8 +129,7 @@
 									</table>
 								</div>
 								<div className="col-sm-8 hidden-xs">
-									<div className="active-person-name">{activePerson != null ? activePerson.name : ""}</div>
-									<div className="active-person-seconds">{activePerson != null ? formatTime(activePerson.seconds) : ""}</div>
+									<ActivePerson person={activePerson} />
 								</div>
 							</div>
 						</div>
