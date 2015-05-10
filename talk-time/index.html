@@ -77,8 +77,7 @@
 					clearInterval(this.interval);
 				},
 				tick: function() {
-					if (this.hasActivePerson())
-					{
+					if (this.hasActivePerson()) {
 						var talkTimes = this.state.talkTimes;
 						talkTimes[this.state.activeIndex]++;
 
@@ -86,7 +85,8 @@
 					}
 				},
 				handleSelect: function(i) {
-					this.setState({activeIndex: i});
+					var newActiveIndex = (i == this.state.activeIndex) ? -1 : i;
+					this.setState({activeIndex: newActiveIndex});
 				},
 				render: function() {
 					return (
