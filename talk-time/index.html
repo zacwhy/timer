@@ -8,37 +8,20 @@
 		<script type="text/javascript" src="names.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<style type="text/css">
-		.time-list {
-			border: 1px solid #ccc;
-			border-collapse: collapse;
-			width: 100%;
+		#example {
+			margin-top: 30px;
 		}
-		.time-list th {
-			font-size: 20px;
-			padding: 0.4em 0.5em;
-		}
-		.time-list td {
-			font-size: 18px;
-			padding: 0.2em 0.5em;
-		}
-		.time-list tr.odd {
-			background-color: #eee;
-		}
-		.time-list tr.even {
-			background-color: #fff;
-		}
-		.time-list tr.active {
-			background-color: yellow;
+		.time-list tr.danger {
 			font-weight: bold;
 		}
 		.time-list .time {
 			text-align: right;
 		}
-		.active-person .name {
-			font-size: 100px;
-		}
 		.active-person .talk-time {
-			font-size: 300px;
+			font-size: 250px;
+		}
+		.active-person .name {
+			font-size: 50px;
 		}
 		</style>
 	</head>
@@ -48,9 +31,9 @@
 			var ActivePerson = React.createClass({
 				render: function() {
 					return (
-						<div className="active-person">
-							<div className="name">{this.props.name}</div>
-							<div className="talk-time">{formatTime(this.props.talkTime)}</div>
+						<div className="jumbotron active-person">
+							<h1 className="talk-time">{formatTime(this.props.talkTime)}</h1>
+							<p className="name">{this.props.name}</p>
 						</div>
 					);
 				}
@@ -93,7 +76,7 @@
 						<div className="container">
 							<div className="row">
 								<div className="col-sm-4">
-									<table className="time-list">
+									<table className="table table-bordered table-hover table-striped time-list">
 										<thead>
 											<tr>
 												<th className="time">{formatTime(this.getTotalTalkTime())}</th>
@@ -102,14 +85,8 @@
 										</thead>
 										<tbody>
 											{this.props.names.map(function(name, i) {
-												var className = (i % 2 == 0) ? "odd" : "even";
-												
-												if (i == this.state.activeIndex) {
-													className += " active";
-												}
-
 												return (
-													<tr onClick={this.handleSelect.bind(this, i)} onTouchStart={this.handleSelect.bind(this, i)} className={className}>
+													<tr onClick={this.handleSelect.bind(this, i)} onTouchStart={this.handleSelect.bind(this, i)} className={(i == this.state.activeIndex) ? "danger" : ""}>
 														<td className="time">{formatTime(this.state.talkTimes[i])}</td>
 														<td>{name}</td>
 													</tr>
